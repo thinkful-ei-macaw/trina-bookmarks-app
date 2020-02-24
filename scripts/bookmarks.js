@@ -4,22 +4,6 @@
 
 // template generators
 
-
-
-
-
-
-
-
+//event handlers
 
 //render!
-
-
-
-
-
-
-
-
-
-//event handlers

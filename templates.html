@@ -37,10 +37,45 @@
 <ul>
   <li>
     <div class="expanded-bookmark">
-      
+      <h2>Title</h2>
+      <button>
+        <a href="url-here">Visit Site</a>
+      </button>
+      <p>
+        Here is the description!
+      </p>
     </div>
   </li>
   <li>Title...Rating</li>
   <li>Title...Rating</li>
   <li>Title...Rating</li>
 </ul>
+
+
+<!------Add View------>
+<h1>My Bookmarks</h1>
+<form action="" method="">
+  <fieldset>
+    <label for="add-url">URL:</label>
+    <input type="text" id="add-url">
+    <label for="add-title">Title:</label>
+    <input type="text" id="add-title">
+  </fieldset>
+  <fieldset id="add-rating">
+    <input type="radio" id="1-star">
+    <label for="1=star">1 Star</label>
+    <input type="radio" id="2-stars">
+    <label for="2-stars">2-Stars</label>
+    <input type="radio" id="3-stars">
+    <label for="3-stars">3 Stars</label>
+    <input type="radio" id="4-stars">
+    <label for="4-stars">4 Stars</label>
+    <input type="radio" id="5-stars">
+    <label for="5-stars">5 Stars</label>
+  </fieldset>
+  <textarea name="add-description" id="add-description" placeholder="Enter description" cols="30" rows="20S"></textarea>
+  <fieldset>
+    <button type="button">Cancel</button>
+    <button type="submit">Create</button>
+  </fieldset>
+</form>

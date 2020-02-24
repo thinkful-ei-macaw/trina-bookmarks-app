@@ -17,7 +17,7 @@ const store = {
 }
 
 //push to server
-let bookmarks = [],
+let bookmarks = [];
 
 
 
