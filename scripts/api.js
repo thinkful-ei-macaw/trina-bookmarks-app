@@ -1,16 +1,32 @@
 'use strict'
 //api methods in here!!
 
-
-const BASE_URL = 'https://thinkful-list-api.herokuapp.com';
+const BASE_URL = 'https://thinkful-list-api.herokuapp.com/trina';
 
 //GET
+function getBookmarks(){
+
+}
+
+//POST (add)
+function addBookmarks(){
+
+}
 
 
-//POST
+//PATCH (edit)
+function editBookmarks(){
 
+}
 
-//PATCH
+//DELETE (delete)
+function deleteBookmarks(){
 
+}
 
-//DELETE
+export default {
+  getBookmarks,
+  addBookmarks,
+  editBookmarks,
+  deleteBookmarks
+}
