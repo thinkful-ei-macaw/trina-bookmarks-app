@@ -1,14 +1,14 @@
 'use strict'
 //api methods in here!!
 
-const BASE_URL = 'https://thinkful-list-api.herokuapp.com/trina';
+const BASE_URL = 'https://thinkful-list-api.herokuapp.com/trina/bookmarks';
 
   //GET
   function getBookmarks(){
-    
-    fetch('https://thinkful-list-api.herokuapp.com')
-      .then(response => response.JSON)
-      .then(console.log(response.JSON))
+    fetch(BASE_URL)
+      .then(response => response.json())
+      .then(responseJson => console.log(responseJson))
+      //now what can I do with responsJson???
     }
     getBookmarks();
 

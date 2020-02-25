@@ -1,3 +1,14 @@
+*{
+ 
+}
+
 ul{
+  border: solid;
   list-style: none;
+  text-align: center;
+  display: block;
+}
+
+li {
+  
 }
