@@ -9,7 +9,7 @@ import api from './api.js';
 function generateMainHtml(){
   return `
   <h1> My Bookmarks</h1>
-<div>
+<div class = "add-filter">
   <button type="button" class="add-button">+ADD</button>
   <select id="min rating">
     <option value "select>Filter by rating</option>
@@ -23,16 +23,14 @@ function generateMainHtml(){
 </div>
 
 <ul>
-  <li class ="expand">Title...Rating</li>
-  <li>Title...Rating</li>
-  <li>Title...Rating</li>
-  <li>Title...Rating</li>
-</ul>`};
+ <li> I want to loop through store.bookmarks, and list them here!</>
+</ul>
+`};
 
 function generateExpandedHtml(){   // bookmarks.expanded: TRUE, adding: false, error: null, filter: 0
   return `
   <h1> My Bookmarks</h1>
-<div>
+<div class = "add-filter">
   <button type="button" class="add-button" >+ADD</button>
   <select id="min rating">
     <option value="1">1+</option>
@@ -65,26 +63,26 @@ function generateExpandedHtml(){   // bookmarks.expanded: TRUE, adding: false, e
 function generateCreateNewHtml(){        //adding: TRUE, error: null, filf]ter: 0
   return `
   <h1>My Bookmarks</h1>
-<form action="" method="">
-  <fieldset>
+<form class="create-bookmark" method="post">
+  <fieldset class="url-title">
     <label for="add-url">URL:</label>
-    <input type="text" id="add-url">
+    <input type="url" id="add-url" name="url" required>
     <label for="add-title">Title:</label>
-    <input type="text" id="add-title">
+    <input type="text" id="add-title" name="title" required>
   </fieldset>
   <fieldset id="add-rating">
-    <input type="radio" id="1-star">
+    <input type="radio" id="1-star" value="1" name="rating" required>
     <label for="1=star">1 Star</label>
-    <input type="radio" id="2-stars">
+    <input type="radio" id="2-stars" value="2" name="rating" required>
     <label for="2-stars">2-Stars</label>
-    <input type="radio" id="3-stars">
+    <input type="radio" id="3-stars" value="3" name="rating" required>
     <label for="3-stars">3 Stars</label>
-    <input type="radio" id="4-stars">
+    <input type="radio" id="4-stars" value="4" name="rating" required>
     <label for="4-stars">4 Stars</label>
-    <input type="radio" id="5-stars">
+    <input type="radio" id="5-stars" value="5" name="rating" required>
     <label for="5-stars">5 Stars</label>
   </fieldset>
-  <textarea name="add-description" id="add-description" placeholder="Enter description" cols="30" rows="20S"></textarea>
+  <textarea name="desc" id="add-description" placeholder="Enter description" cols="30" rows="20S"></textarea>
   <fieldset>
     <button type="button" class="cancel-button">Cancel</button>
     <button type="submit" class="create-button">Create</button>
@@ -120,6 +118,9 @@ function handleExpandView(){
 //Set filter value to <select> input
 function handleSetFilter(){
   //change filter then render
+  // store.filter = $('.add-rating').val();
+  // render();
+  // return;
 }
 
 //opens the 'add bookmark page'
@@ -132,14 +133,34 @@ function handleAddNewClick(){
   return;
 };
 
-//add inputed data to the store....
-function handleCreateNewClick(){
-  $('main').on('click','.create-button', function (event){
-    event.preventDefault();
-    const newEntry ="" 
+function serializeJson(form) {
+  const formData = new FormData(form);
+  const o = {};
+  formData.forEach((val, name) => o[name] = val);
+  return JSON.stringify(o);
+}
 
+//add inputed data to the store....
+function handleCreateClick(){
+  $('main').on('submit','.create-bookmark', function (event){
+    event.preventDefault();
+    //Store inputs in variable-- how to I capture all inputs? (title, url, etc?)
+    let formElement = $('.create-bookmark')[0];
+    const newEntry = serializeJson(formElement);
+    console.log(newEntry);
+    //add the inputs to the server
+    api.addBookmarks(newEntry)
+    .then((newBookmark) => {
+      //also add them to the bookmark array
+      store.addBookmark(newBookmark);
+      store.adding = false;
+      console.log(store.bookmarks);
+      render()
+    })
+    .catch((error) => {
+      store.sendError(error.message);
+    })
   });
-  return;
 };
 
 function handleCancelClick(){
@@ -160,7 +181,7 @@ function handleDeleteClick(){
   handleExpandView();
   handleSetFilter();
   handleAddNewClick();
-  handleCreateNewClick();
+  handleCreateClick();
   handleCancelClick();
   handleDeleteClick();
 
@@ -169,7 +190,7 @@ export default {
   handleExpandView,
   handleSetFilter,
   handleAddNewClick,
-  handleCreateNewClick,
+  handleCreateClick,
   handleCancelClick,
   handleDeleteClick
 }

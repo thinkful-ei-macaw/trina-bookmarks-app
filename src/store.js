@@ -11,8 +11,9 @@ function findById(id){
 };
 
 
-function addBookmark(bookmark){
-  this.bookmarks.push(bookmark);
+function addBookmark(newBookmark){
+  let obj = {...newBookmark, expanded: false}
+  this.bookmarks.push(obj);
 }
 
 function deleteBookmark(id){

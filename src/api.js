@@ -35,12 +35,11 @@ const BASE_URL = 'https://thinkful-list-api.herokuapp.com/trina/bookmarks';
     };
 
   //POST 
-  function addBookmarks(name){
-    const newBookmark = JSON.stringify(name);
+  function addBookmarks(bookmark){
     return apiFetch(BASE_URL, {
       method: 'POST',
       headers: {'content-type': 'application/json'},
-      body: newBookmark
+      body: bookmark
     });
   };
 

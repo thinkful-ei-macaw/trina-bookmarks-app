@@ -1,4 +1,7 @@
 
+h1 {
+  text-align: center;
+}
 
 ul{
   list-style: none;
@@ -10,4 +13,8 @@ li {
   margin: 20px;
   padding: 20px;
   border: solid;
+}
+
+.add-filter {
+  text-align: center;
 }
