@@ -3,12 +3,15 @@
 }
 
 ul{
-  border: solid;
   list-style: none;
   text-align: center;
   display: block;
 }
 
 li {
+  margin: 20px;
+  padding: 20px;
+  border: solid;
+
   
 }

@@ -1,4 +1,7 @@
 'use strict'
+
+//import bookmarks from "./bookmarks";
+
 //api methods in here!!
 const BASE_URL = 'https://thinkful-list-api.herokuapp.com/trina/bookmarks';
 
@@ -30,7 +33,7 @@ const BASE_URL = 'https://thinkful-list-api.herokuapp.com/trina/bookmarks';
     console.log(apiFetch(BASE_URL))
     return apiFetch(BASE_URL)
     };
-    getBookmarks();
+   
 
   //POST 
   function addBookmarks(name){
@@ -59,7 +62,7 @@ const BASE_URL = 'https://thinkful-list-api.herokuapp.com/trina/bookmarks';
       method: 'DELETE'
     });
   };
-
+  
 
 export default {
   getBookmarks,

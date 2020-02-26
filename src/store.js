@@ -1,41 +1,26 @@
 'use strict'
 import api from './api.js';
-
-//store obj is populated on server
-//for reference only
-const store = {
-  bookmarks:[
-    {
-      id:'',
-      title:'',
-      url:'',
-      description:'',
-      expanded:''
-    }
-  ],
-  adding: false,
-  error: null,
-  filter: 0
-}
-
-//push to server
 let bookmarks = [];
-
-
+let adding = false;
+let error = null;
+let filter = 0;
 
 //here will be functions that directly manipulate the store object
+function findById(id){
+  return this.bookmarks(current => current.id === id);
+};
 
-function addBookmark(){
-  //add obj to bookmarks[]
-  // Will I need separate funcs. for each of 6 properties?
-  //use fetch api
+
+function addBookmark(bookmark){
+ // this.bookmarks.push(bookmark);
+ 
 }
 
-function deleteBookmark(){
-  //remove obj from bookmarks[]
-  //use delete api
+function deleteBookmark(id){
+  //this.bookmarks = this.bookmarks.filter(current => current.id !== id);
 }
 
+////////////////?????????????/////////////////////////////
 function toggleAdding(){
   //true or false
 }
@@ -50,6 +35,10 @@ function sendError(){
 }
 
 export default {
+  bookmarks,
+  adding,
+  error,
+  filter,
   addBookmark,
   deleteBookmark,
   toggleAdding,
