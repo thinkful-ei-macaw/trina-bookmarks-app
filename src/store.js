@@ -7,31 +7,29 @@ let filter = 0;
 
 //here will be functions that directly manipulate the store object
 function findById(id){
-  return this.bookmarks(current => current.id === id);
+  return this.bookmarks.find(current => current.id === id);
 };
 
 
 function addBookmark(bookmark){
- // this.bookmarks.push(bookmark);
- 
+  this.bookmarks.push(bookmark);
 }
 
 function deleteBookmark(id){
-  //this.bookmarks = this.bookmarks.filter(current => current.id !== id);
+  this.bookmarks = this.bookmarks.filter(current => current.id !== id);
 }
 
-////////////////?????????????/////////////////////////////
-function toggleAdding(){
-  //true or false
+function editBookmark(id, newData){
+  let current = this.findById(id);
+  Object.assign(current, newData);
 }
 
-function toggleFilter(){ //???
- //does this directly modify the store??
- //should this func be in bookmarks.js?
+function filterBookmarks(){ 
+  //something in here.....
 }
 
-function sendError(){
-
+function sendError(error){
+  this.error = error;
 }
 
 export default {
@@ -39,9 +37,10 @@ export default {
   adding,
   error,
   filter,
+  findById,
   addBookmark,
   deleteBookmark,
-  toggleAdding,
-  toggleFilter,
+  editBookmark,
+  filterBookmarks,
   sendError
 }

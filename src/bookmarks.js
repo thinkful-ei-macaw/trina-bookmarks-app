@@ -5,6 +5,7 @@ import api from './api.js';
 
 
 // template generators
+// use store.bookmarks.map(generateBookmark)??
 function generateMainHtml(){
   return `
   <h1> My Bookmarks</h1>
@@ -58,8 +59,9 @@ function generateExpandedHtml(){   // bookmarks.expanded: TRUE, adding: false, e
   <li>Title...Rating</li>
   <li>Title...Rating</li>
   <li>Title...Rating</li>
-</ul>`;
-}
+</ul>`
+};
+
 function generateCreateNewHtml(){        //adding: TRUE, error: null, filf]ter: 0
   return `
   <h1>My Bookmarks</h1>
@@ -92,6 +94,7 @@ function generateCreateNewHtml(){        //adding: TRUE, error: null, filf]ter: 
 
 //updates the dom based on changes made to the store!
 function render(){
+  let bookmarks = store.bookmarks;
   // also check for value of error, filter, and expanded!
   if (store.adding === false){
        $('main').html(generateMainHtml());   
@@ -133,9 +136,11 @@ function handleAddNewClick(){
 function handleCreateNewClick(){
   $('main').on('click','.create-button', function (event){
     event.preventDefault();
+    const newEntry ="" 
+
   });
   return;
-}
+};
 
 function handleCancelClick(){
   //click cancel button to return to main page
@@ -145,7 +150,7 @@ function handleCancelClick(){
    console.log('cancel click handled');
   }); 
   return;
-}
+};
 
 function handleDeleteClick(){
   //click to remove bookmark 
