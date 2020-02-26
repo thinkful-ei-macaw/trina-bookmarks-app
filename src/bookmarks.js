@@ -5,7 +5,6 @@ import api from './api.js';
 
 
 // template generators
-// use store.bookmarks.map(generateBookmark)??
 function generateMainHtml(){
   return `
   <h1> My Bookmarks</h1>
@@ -23,9 +22,10 @@ function generateMainHtml(){
 </div>
 
 <ul>
- <li> I want to loop through store.bookmarks, and list them here!</>
+ <li> S O S !!!!! </li>
 </ul>
 `};
+//in <ul> above, I want to loop through store.bookmarks and display each as an <li>
 
 function generateExpandedHtml(){   // bookmarks.expanded: TRUE, adding: false, error: null, filter: 0
   return `
@@ -99,7 +99,8 @@ function render(){
   } else if (store.adding === true) {
        $('main').html(generateCreateNewHtml());
   }
-  console.log('renderig...')
+  console.log('renderig...');
+  console.log(`Bookmarks: ${store.bookmarks}`)
   console.log(`adding: ${store.adding}`);
   console.log(`error: ${store.error}`);
   console.log(`filter: ${store.filter}`);
