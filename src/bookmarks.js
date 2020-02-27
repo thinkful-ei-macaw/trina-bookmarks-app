@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 import store from './store.js';
 import api from './api.js';
 
@@ -22,9 +22,12 @@ function generateMainHtml(){
 </div>
 
 <ul>
- <li> S O S !!!!! </li>
+ <li>SOS</li>
 </ul>
 `};
+
+
+
 //in <ul> above, I want to loop through store.bookmarks and display each as an <li>
 
 function generateExpandedHtml(){   // bookmarks.expanded: TRUE, adding: false, error: null, filter: 0
@@ -90,9 +93,27 @@ function generateCreateNewHtml(){        //adding: TRUE, error: null, filf]ter: 
 </form>`;
 }
 
+function generateBookmarkElem(bookmark){
+  let bookmarkTitle = `<span>${bookmark.name}</span>`;
+  //check the rating value of the bookmark, it's below the set filter, don't displat it
+  //otherwise:
+  return `
+  <li>${bookmarkTitle}</li>'
+  `;
+}
+
+function generateBookmarkStr(bookmarkList){
+  const bookmarks = bookmarkList.map((bookmark) => generateBookmarkElem(bookmark));
+  return bookmarks.join('');
+}
+
 //updates the dom based on changes made to the store!
 function render(){
-  let bookmarks = store.bookmarks;
+  let bookmarks = [...store.bookmarks];
+  const bookmarkStr = generateBookmarkStr(bookmarks);
+
+
+
   // also check for value of error, filter, and expanded!
   if (store.adding === false){
        $('main').html(generateMainHtml());   
