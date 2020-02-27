@@ -5,7 +5,7 @@ import api from './api.js';
 
 
 // template generators
-function generateMainHtml(){
+function generateMainHtml(bookmarkStr){
   return `
   <h1> My Bookmarks</h1>
 <div class = "add-filter">
@@ -22,7 +22,7 @@ function generateMainHtml(){
 </div>
 
 <ul>
- <li>SOS</li>
+ ${bookmarkStr}
 </ul>
 `};
 
@@ -63,7 +63,7 @@ function generateExpandedHtml(){   // bookmarks.expanded: TRUE, adding: false, e
 </ul>`
 };
 
-function generateCreateNewHtml(){        //adding: TRUE, error: null, filf]ter: 0
+function generateCreateNewHtml(){        //adding: TRUE, error: null, filter: 0
   return `
   <h1>My Bookmarks</h1>
 <form class="create-bookmark" method="post">
@@ -86,7 +86,7 @@ function generateCreateNewHtml(){        //adding: TRUE, error: null, filf]ter: 
     <label for="5-stars">5 Stars</label>
   </fieldset>
   <textarea name="desc" id="add-description" placeholder="Enter description" cols="30" rows="20S"></textarea>
-  <fieldset>
+  <fieldset class="create-boomkark" id="bottom-buttons">
     <button type="button" class="cancel-button">Cancel</button>
     <button type="submit" class="create-button">Create</button>
   </fieldset>
@@ -94,11 +94,11 @@ function generateCreateNewHtml(){        //adding: TRUE, error: null, filf]ter: 
 }
 
 function generateBookmarkElem(bookmark){
-  let bookmarkTitle = `<span>${bookmark.name}</span>`;
+  let bookmarkTitle = `<span>${bookmark.title}.....Rating: ${bookmark.rating}</span>`;
   //check the rating value of the bookmark, it's below the set filter, don't displat it
   //otherwise:
   return `
-  <li>${bookmarkTitle}</li>'
+  <li class="list-item">${bookmarkTitle}</li>
   `;
 }
 
@@ -110,16 +110,14 @@ function generateBookmarkStr(bookmarkList){
 //updates the dom based on changes made to the store!
 function render(){
   let bookmarks = [...store.bookmarks];
+  console.log(bookmarks)
   const bookmarkStr = generateBookmarkStr(bookmarks);
-
-
-
   // also check for value of error, filter, and expanded!
   if (store.adding === false){
-       $('main').html(generateMainHtml());   
-  } else if (store.adding === true) {
+       $('main').html(generateMainHtml(bookmarkStr));   
+  } else if (store.adding === true)  {
        $('main').html(generateCreateNewHtml());
-  }
+  };
   console.log('renderig...');
   console.log(`Bookmarks: ${store.bookmarks}`)
   console.log(`adding: ${store.adding}`);
@@ -133,16 +131,14 @@ function render(){
 
 //should expand individual bookmark item when it's clicked on 
 function handleExpandView(){
- 
-  return;
+  
 }
 
 //Set filter value to <select> input
 function handleSetFilter(){
-  //change filter then render
-  // store.filter = $('.add-rating').val();
-  // render();
-  // return;
+  let rating = $('.min-rating').val();
+  store.bookmarks.rating = rating;
+  render();
 }
 
 //opens the 'add bookmark page'

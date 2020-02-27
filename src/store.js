@@ -20,13 +20,13 @@ function deleteBookmark(id){
   this.bookmarks = this.bookmarks.filter(current => current.id !== id);
 }
 
-function editBookmark(id, newData){
-  let current = this.findById(id);
-  Object.assign(current, newData);
-}
+// function editBookmark(id, newData){
+//   let current = this.findById(id);
+//   Object.assign(current, newData);
+// }
 
 function filterBookmarks(){ 
-  //something in here.....
+  return this.bookmarks.filter(bookmark => bookmark >= this.filter)
 }
 
 function sendError(error){
@@ -41,7 +41,7 @@ export default {
   findById,
   addBookmark,
   deleteBookmark,
-  editBookmark,
+  //editBookmark,
   filterBookmarks,
   sendError
 }
