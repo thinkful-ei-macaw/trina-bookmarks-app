@@ -3,8 +3,10 @@ import store from './store.js';
 import api from './api.js';
 
 
+//////////////////////////////////template generators/////////////////////////
 
-// template generators
+//Initial startup page with an 'add' button and filter selector
+//the code inside the <ul> fetches data from the server and displays is as <li>'s
 function generateMainHtml(bookmarkStr){
   return `
   <h1> My Bookmarks</h1>
@@ -26,11 +28,12 @@ function generateMainHtml(bookmarkStr){
 </ul>
 `};
 
-
-
-//in <ul> above, I want to loop through store.bookmarks and display each as an <li>
-
-function generateExpandedHtml(){   // bookmarks.expanded: TRUE, adding: false, error: null, filter: 0
+//Expanded displays additional details of the selected bookmark
+//such as the url, and desctiption
+//should not display a whole new page, rather a different <li> get inserted into <ul>
+//I think I can accomplish this in the generateBookmarkElem() and do away with this completely
+// bookmarks.expanded: TRUE, adding: false, error: null, filter: 0
+function generateExpandedHtml(){
   return `
   <h1> My Bookmarks</h1>
 <div class = "add-filter">
@@ -63,7 +66,9 @@ function generateExpandedHtml(){   // bookmarks.expanded: TRUE, adding: false, e
 </ul>`
 };
 
-function generateCreateNewHtml(){        //adding: TRUE, error: null, filter: 0
+//New page that displays forms allowing users to create a new bookmark
+//adding: TRUE, error: null, filter: 0
+function generateCreateNewHtml(){        
   return `
   <h1>My Bookmarks</h1>
 <form class="create-bookmark" method="post">
@@ -93,21 +98,31 @@ function generateCreateNewHtml(){        //adding: TRUE, error: null, filter: 0
 </form>`;
 }
 
+//create bookmark list element that gets displayed on the page
+//check the bookmark's expanded value and create two version of <li> for T or F
 function generateBookmarkElem(bookmark){
   let bookmarkTitle = `<span>${bookmark.title}.....Rating: ${bookmark.rating}</span>`;
-  //check the rating value of the bookmark, it's below the set filter, don't displat it
+  //need to check the rating value of the bookmark, it's below the set filter, don't displat it
   //otherwise:
   return `
-  <li class="list-item">${bookmarkTitle}</li>
+  <li class="list-item" id=${bookmark.id}>
+    <h2>${bookmark.title}</h2>
+    <p>${bookmark.rating}</p>
+    <button class="delete-button">Delete</button>
+  </li>
   `;
 }
 
+//I don't completely understand what this is for...
+//joins something togther..
 function generateBookmarkStr(bookmarkList){
   const bookmarks = bookmarkList.map((bookmark) => generateBookmarkElem(bookmark));
   return bookmarks.join('');
 }
 
 //updates the dom based on changes made to the store!
+//see console log statements for store properties to check for
+//bookmarks vs store.bookmarks ?????
 function render(){
   let bookmarks = [...store.bookmarks];
   console.log(bookmarks)
@@ -119,38 +134,50 @@ function render(){
        $('main').html(generateCreateNewHtml());
   };
   console.log('renderig...');
-  console.log(`Bookmarks: ${store.bookmarks}`)
+  console.log(`Bookmarks: ${store.bookmarks, bookmarks}`)
   console.log(`adding: ${store.adding}`);
   console.log(`error: ${store.error}`);
   console.log(`filter: ${store.filter}`);
+  console.log(`expanded:${store.bookmarks.expanded}`)
   return;
 };
 
-//EVENT HANDLERS....these should update data in the store but should
-//not directly manipulate the dom... That's what render is for!!
+/////////////////////////////EVENT HANDLERS////////////////////////////
+//....these should update the store properties but 
+//should not directly manipulate the dom... That's what render() is for!!
 
-//should expand individual bookmark item when it's clicked on 
+
+//when a list item (bookmark) is clicked
+//set bookmarks.expanded to TRUE!
+    //then render will call the expandedHtml template fn
 function handleExpandView(){
-  
+  $('main').on('click', '.list-item', function(event){
+    store.expanded = true;
+    render();
+    console.log('list-item was clicked')
+    });
 }
 
-//Set filter value to <select> input
+//When a filter value is selected, 
+//set the filter property to that value!
+    //then render (or generate bookmarkStr) will sort through the bookmark ratings and display accordingly
 function handleSetFilter(){
   let rating = $('.min-rating').val();
   store.bookmarks.rating = rating;
   render();
 }
 
-//opens the 'add bookmark page'
+//when the add buttom is clicked, adding property is set to true
+    //then render will call the generateCreateNew fn
 function handleAddNewClick(){
   $('main').on('click', '.add-button', function(event){
     store.adding = true;
     render();
     console.log('add click handled');
   });
-  return;
 };
 
+//converts the user input into a JSON object (I think)
 function serializeJson(form) {
   const formData = new FormData(form);
   const o = {};
@@ -158,21 +185,22 @@ function serializeJson(form) {
   return JSON.stringify(o);
 }
 
-//add inputed data to the store....
+//when the user clicks 'Create' after typing in some data:
 function handleCreateClick(){
   $('main').on('submit','.create-bookmark', function (event){
     event.preventDefault();
-    //Store inputs in variable-- how to I capture all inputs? (title, url, etc?)
+    //Store the inputs into a variable and convert in to JSON
     let formElement = $('.create-bookmark')[0];
     const newEntry = serializeJson(formElement);
     console.log(newEntry);
     //add the inputs to the server
     api.addBookmarks(newEntry)
     .then((newBookmark) => {
-      //also add them to the bookmark array
+      //also add them to the bookmark array defined in store module
       store.addBookmark(newBookmark);
+      //then set adding prop back to false since we are now done adding
       store.adding = false;
-      console.log(store.bookmarks);
+      console.log('store.bookmarks:', store.bookmarks);
       render()
     })
     .catch((error) => {
@@ -181,8 +209,10 @@ function handleCreateClick(){
   });
 };
 
+//when the user clicks 'cancel'
+//adding gets changed to false
+    //and render with call the mainHtml fn
 function handleCancelClick(){
-  //click cancel button to return to main page
   $('main').on('click', '.cancel-button', function(event){
    store.adding = false;
    render(); 
@@ -191,24 +221,31 @@ function handleCancelClick(){
   return;
 };
 
+//when delete is clicked, 
+//call api.deletetookmarks to remove is from server
+//and remove it from store.bookmarks 
 function handleDeleteClick(){
-  //click to remove bookmark 
+
 }
 
-  render();
-  handleExpandView();
-  handleSetFilter();
-  handleAddNewClick();
-  handleCreateClick();
-  handleCancelClick();
-  handleDeleteClick();
+function getBookmarkId(bookmark){
+  return $(bookmark)
+  .closest('.list-item')
+  .attr('.bookmark-id');
+}
 
+
+  function bindEventListenders() {
+    handleExpandView();
+    handleSetFilter();
+    handleAddNewClick();
+    handleCreateClick();
+    handleCancelClick();
+    handleDeleteClick(); 
+    getBookmarkId();
+  }
+  
 export default {
   render,
-  handleExpandView,
-  handleSetFilter,
-  handleAddNewClick,
-  handleCreateClick,
-  handleCancelClick,
-  handleDeleteClick
-}
+  bindEventListenders
+};

@@ -1,21 +1,26 @@
 'use strict';
 import api from './api.js';
+
+//set variables that correspond to the store properties
 let bookmarks = [];
 let adding = false;
 let error = null;
 let filter = 0;
 
-//here will be functions that directly manipulate the store object
+////////These functions manipulate data in the bookmarks array//////// 
+
+//This should get the unique id given to each bookmark pushed to server
 function findById(id){
   return this.bookmarks.find(current => current.id === id);
 };
 
-
+//capture everything passed in into an obj then push obj to bookmarks[]
 function addBookmark(newBookmark){
   let obj = {...newBookmark, expanded: false}
   this.bookmarks.push(obj);
 }
 
+//remove 
 function deleteBookmark(id){
   this.bookmarks = this.bookmarks.filter(current => current.id !== id);
 }

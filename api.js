@@ -1,6 +1,6 @@
 'use strict';
 
-//import bookmarks from "./bookmarks";
+import bookmarks from "./bookmarks.js";
 
 //api methods in here!!
 const BASE_URL = 'https://thinkful-list-api.herokuapp.com/trina/bookmarks';
