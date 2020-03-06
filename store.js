@@ -18,6 +18,7 @@ function findById(id){
 function addBookmark(newBookmark){
   let obj = {...newBookmark, expanded: false}
   this.bookmarks.push(obj);
+  //console.log(obj, 'was added to STORE')
 }
 
 function toggleExpand(bookmark){

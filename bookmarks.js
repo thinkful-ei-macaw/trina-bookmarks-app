@@ -9,7 +9,7 @@ import api from './api.js';
 
 //Initial startup page with an 'add' button and filter selector
 //the code inside the <ul> fetches data from the server and displays is as <li>'s
-function generateMainHtml(bookmarkStr){
+function generateMainHtml(items){
   return `
   <h1> My Bookmarks</h1>
 <div class = "add-filter">
@@ -26,14 +26,14 @@ function generateMainHtml(bookmarkStr){
 </div>
 
 <ul>
- ${bookmarkStr}
+${items}
 </ul>
 `};
 
 //Expanded displays additional details of the selected bookmark
 //such as the url, and desctiption
 //should not display a whole new page, rather a different <li> get inserted into <ul>
-//I think I can accomplish this in the generateBookmarkElem() and do away with this completely
+//I think I can accomplish this in the generateBookmarkItem() and do away with this completely
 // bookmarks.expanded: TRUE, adding: false, error: null, filter: 0
 
 
@@ -71,56 +71,50 @@ function generateCreateNewHtml(){
 
 //create bookmark list element that gets displayed on the page
 //check the bookmark's expanded value and create two version of <li> for T or F
-function generateBookmarkElem(bookmark){
-  //need to check the rating value of the bookmark, it's below the set filter, don't displat it
+function generateBookmarkItem(bookmark){
+  //if expanded, return expanded view.
   //otherwise:
-  if (store.bookmarks.expanded === true){
     return `
     <li class="list-item" id=${bookmark.id}>
-      <h2>${bookmark.title}</h2>
-      <p>${bookmark.rating}</p>
-      <a href=${bookmark.url}>Visit Site</a>
-      <div class="description>${bookmark.desc}
-      <button class="delete-button">Delete</button>
-    </li>
-    `;
-  } else {
-    return `
-    <li class="list-item" id=${bookmark.id}>
-      <h2>${bookmark.title}</h2>
+      <h2 class="click-to-expand">${bookmark.title}</h2>
       <p>${bookmark.rating}</p>
       <button class="delete-button">Delete</button>
     </li>
     `;
   }
+
+//maps over each <li> created and joins them together
+function generateBookmarkList(bookmarkItem){
+  const list = bookmarkItem.map((bookmark) => generateBookmarkItem(bookmark));
+  return list.join('');
 }
 
-//I don't completely understand what this is for...
-//joins something togther..
-function generateBookmarkStr(bookmarkList){
-  const bookmarks = bookmarkList.map((bookmark) => generateBookmarkElem(bookmark));
-  return bookmarks.join('');
+function whatToExpand(e){
+  let itemId = getBookmarkId(e.currentTarget);
+  store.bookmarks.forEach(bookmark => {
+    if (bookmark.id === itemId){
+      store.toggleExpand;
+    }
+  })
 }
 
 //updates the dom based on changes made to the store!
-//see console log statements for store properties to check for
-//bookmarks vs store.bookmarks ?????
 function render(){
   let bookmarks = [...store.bookmarks];
-  const bookmarkStr = generateBookmarkStr(bookmarks);
+  let items = generateBookmarkList(bookmarks);
+  //need to add error functions........
   if (store.adding === true){
     $('main').html(generateCreateNewHtml());
-  // } else if (store.bookmarks.expanded === true){
-  //   $('main').html(generateExpandedHtml());
   } else {
-    $('main').html(generateMainHtml(bookmarkStr));
+    $('main').html(generateMainHtml(items));
   }
   console.log('rendering...');
+  //why doenst bookmarks store the same data thats in store.bookmarks????
+  console.log(bookmarks);
+  console.log(store.bookmarks)
   // console.log(`Bookmarks:${store.bookmarks}`)
   // console.log(`adding: ${store.adding}`);
   // console.log(`error: ${store.error}`);
-  // console.log(`filter: ${store.filter}`);
-  // console.log(`expanded:${store.bookmarks.expanded}`)
   return;
 };
 
@@ -134,21 +128,21 @@ function render(){
     //then render will call the expandedHtml template fn
 function handleExpandView(){
   $('main').on('click', '.list-item', function(event){
-    //variable should store the bookkmark's ID
     let bookmark = store.findById(store.bookmarks);
-    store.toggleExpand(bookmark);
+    console.log('to expand', bookmark);
+    //call whatToExpand that will only toggle for specific ID
+    whatToExpand(bookmark);
+    //store.toggleExpand(bookmark);
     render();
-    console.log('list-item was clicked')
-    });console.log('filter was set')
+    console.log('item wants to expand')
+    });
 }
 
 //When a filter value is selected, 
 //set the filter property to that value!
     //then render (or generate bookmarkStr) will sort through the bookmark ratings and display accordingly
 function handleSetFilter(){
-  let rating = $('.min-rating').val();
-  store.bookmarks.rating = rating;
-  render();
+
 }
 
 //when the add buttom is clicked, adding property is set to true
@@ -176,7 +170,6 @@ function handleCreateClick(){
     //Store the inputs into a variable and convert in to JSON
     let formElement = $('.create-bookmark')[0];
     const newEntry = serializeJson(formElement);
-    console.log(newEntry);
     //add the inputs to the server
     api.addBookmarks(newEntry)
     .then((newBookmark) => {
@@ -184,7 +177,8 @@ function handleCreateClick(){
       store.addBookmark(newBookmark);
       //then set adding prop back to false since we are now done adding
       store.adding = false;
-      console.log('store.bookmarks:', store.bookmarks);
+      console.log('create click handled')
+      console.log('JSONified entry', newEntry)
       render()
     })
     .catch((error) => {
@@ -209,9 +203,15 @@ function handleCancelClick(){
 //call api.deletetookmarks to remove is from server
 //and remove it from store.bookmarks 
 function handleDeleteClick(){
-
+  $('main').on('click', 'delete-button', function(event){
+    api.deleteBookmarks();
+    store.deleteBookmark();
+    render();
+    console.log('delete click handled')
+  })
 }
 
+//this is to identify a specific bookmark
 function getBookmarkId(bookmark){
   return $(bookmark)
   .closest('.list-item')
