@@ -20,6 +20,10 @@ function addBookmark(newBookmark){
   this.bookmarks.push(obj);
 }
 
+function toggleExpand(bookmark){
+  bookmarks.expanded = !bookmarks.expanded;
+}
+
 //remove 
 function deleteBookmark(id){
   this.bookmarks = this.bookmarks.filter(current => current.id !== id);
@@ -45,6 +49,7 @@ export default {
   filter,
   findById,
   addBookmark,
+  toggleExpand,
   deleteBookmark,
   //editBookmark,
   filterBookmarks,

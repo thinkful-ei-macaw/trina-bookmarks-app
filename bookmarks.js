@@ -2,6 +2,8 @@
 import store from './store.js';
 import api from './api.js';
 
+//SOS
+// 
 
 //////////////////////////////////template generators/////////////////////////
 
@@ -33,38 +35,7 @@ function generateMainHtml(bookmarkStr){
 //should not display a whole new page, rather a different <li> get inserted into <ul>
 //I think I can accomplish this in the generateBookmarkElem() and do away with this completely
 // bookmarks.expanded: TRUE, adding: false, error: null, filter: 0
-function generateExpandedHtml(){
-  return `
-  <h1> My Bookmarks</h1>
-<div class = "add-filter">
-  <button type="button" class="add-button" >+ADD</button>
-  <select id="min rating">
-    <option value="1">1+</option>
-    <option value="2">2+</option>
-    <option value="3">3+</option>
-    <option value="4">4+</option>
-    <option value="5">5+</option>
-    </option>
-  </select>
-</div>
 
-<ul>
-  <li>
-    <div class="expanded-bookmark">
-      <h2>Title</h2>
-      <button>
-        <a href="url-here">Visit Site</a>
-      </button>
-      <p>
-        Here is the description!
-      </p>
-    </div>
-  </li>
-  <li>Title...Rating</li>
-  <li>Title...Rating</li>
-  <li>Title...Rating</li>
-</ul>`
-};
 
 //New page that displays forms allowing users to create a new bookmark
 //adding: TRUE, error: null, filter: 0
@@ -101,16 +72,27 @@ function generateCreateNewHtml(){
 //create bookmark list element that gets displayed on the page
 //check the bookmark's expanded value and create two version of <li> for T or F
 function generateBookmarkElem(bookmark){
-  let bookmarkTitle = `<span>${bookmark.title}.....Rating: ${bookmark.rating}</span>`;
   //need to check the rating value of the bookmark, it's below the set filter, don't displat it
   //otherwise:
-  return `
-  <li class="list-item" id=${bookmark.id}>
-    <h2>${bookmark.title}</h2>
-    <p>${bookmark.rating}</p>
-    <button class="delete-button">Delete</button>
-  </li>
-  `;
+  if (store.bookmarks.expanded === true){
+    return `
+    <li class="list-item" id=${bookmark.id}>
+      <h2>${bookmark.title}</h2>
+      <p>${bookmark.rating}</p>
+      <a href=${bookmark.url}>Visit Site</a>
+      <div class="description>${bookmark.desc}
+      <button class="delete-button">Delete</button>
+    </li>
+    `;
+  } else {
+    return `
+    <li class="list-item" id=${bookmark.id}>
+      <h2>${bookmark.title}</h2>
+      <p>${bookmark.rating}</p>
+      <button class="delete-button">Delete</button>
+    </li>
+    `;
+  }
 }
 
 //I don't completely understand what this is for...
@@ -125,20 +107,20 @@ function generateBookmarkStr(bookmarkList){
 //bookmarks vs store.bookmarks ?????
 function render(){
   let bookmarks = [...store.bookmarks];
-  console.log(bookmarks)
   const bookmarkStr = generateBookmarkStr(bookmarks);
-  // also check for value of error, filter, and expanded!
-  if (store.adding === false){
-       $('main').html(generateMainHtml(bookmarkStr));   
-  } else if (store.adding === true)  {
-       $('main').html(generateCreateNewHtml());
-  };
-  console.log('renderig...');
-  console.log(`Bookmarks: ${store.bookmarks, bookmarks}`)
-  console.log(`adding: ${store.adding}`);
-  console.log(`error: ${store.error}`);
-  console.log(`filter: ${store.filter}`);
-  console.log(`expanded:${store.bookmarks.expanded}`)
+  if (store.adding === true){
+    $('main').html(generateCreateNewHtml());
+  // } else if (store.bookmarks.expanded === true){
+  //   $('main').html(generateExpandedHtml());
+  } else {
+    $('main').html(generateMainHtml(bookmarkStr));
+  }
+  console.log('rendering...');
+  // console.log(`Bookmarks:${store.bookmarks}`)
+  // console.log(`adding: ${store.adding}`);
+  // console.log(`error: ${store.error}`);
+  // console.log(`filter: ${store.filter}`);
+  // console.log(`expanded:${store.bookmarks.expanded}`)
   return;
 };
 
@@ -152,10 +134,12 @@ function render(){
     //then render will call the expandedHtml template fn
 function handleExpandView(){
   $('main').on('click', '.list-item', function(event){
-    store.expanded = true;
+    //variable should store the bookkmark's ID
+    let bookmark = store.findById(store.bookmarks);
+    store.toggleExpand(bookmark);
     render();
     console.log('list-item was clicked')
-    });
+    });console.log('filter was set')
 }
 
 //When a filter value is selected, 
