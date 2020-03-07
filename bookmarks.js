@@ -89,6 +89,7 @@ function generateBookmarkList(bookmarkItem){
   return list.join('');
 }
 
+//gets the id of element that was clicked on and toggles expand for that item*********************************************
 function whatToExpand(e){
   let itemId = getBookmarkId(e.currentTarget);
   store.bookmarks.forEach(bookmark => {
@@ -109,7 +110,7 @@ function render(){
     $('main').html(generateMainHtml(items));
   }
   console.log('rendering...');
-  //why doenst bookmarks store the same data thats in store.bookmarks????
+  //why doenst bookmarks initially  store the same data thats in store.bookmarks????
   console.log(bookmarks);
   console.log(store.bookmarks)
   // console.log(`Bookmarks:${store.bookmarks}`)
@@ -125,20 +126,20 @@ function render(){
 
 //when a list item (bookmark) is clicked
 //set bookmarks.expanded to TRUE!
-    //then render will call the expandedHtml template fn
+    //then render will call the expandedHtml template fn ********************************************************
 function handleExpandView(){
-  $('main').on('click', '.list-item', function(event){
-    let bookmark = store.findById(store.bookmarks);
-    console.log('to expand', bookmark);
-    //call whatToExpand that will only toggle for specific ID
-    whatToExpand(bookmark);
-    //store.toggleExpand(bookmark);
-    render();
-    console.log('item wants to expand')
-    });
+  // $('main').on('click', '.list-item', function(event){
+  //   let bookmark = store.findById(store.bookmarks);
+  //   console.log('to expand', bookmark);
+  //   //call whatToExpand that will only toggle for specific ID
+  //   //whatToExpand(bookmark);
+  //   //store.toggleExpand(bookmark);
+  //   render();
+  //   console.log('item wants to expand')
+  //  });
 }
 
-//When a filter value is selected, 
+//When a filter value is selected, ******************************************************************************
 //set the filter property to that value!
     //then render (or generate bookmarkStr) will sort through the bookmark ratings and display accordingly
 function handleSetFilter(){
@@ -200,15 +201,20 @@ function handleCancelClick(){
 };
 
 //when delete is clicked, 
-//call api.deletetookmarks to remove is from server
+//call api.deletetookmarks to remove is from server*************************************************************
 //and remove it from store.bookmarks 
 function handleDeleteClick(){
-  $('main').on('click', 'delete-button', function(event){
-    api.deleteBookmarks();
-    store.deleteBookmark();
-    render();
-    console.log('delete click handled')
+  $('main').on('click', '.delete-button', function(event){
+    event.preventDefault();
+    let id = getBookmarkId(event.currentTarget);
+    api.deleteBookmarks(id)
+      .then(function() {
+        store.deleteBookmark(id);
+        render();
+      })
+    //catch error!
   })
+  console.log('delete click handled'); 
 }
 
 //this is to identify a specific bookmark
