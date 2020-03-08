@@ -70,16 +70,26 @@ function generateCreateNewHtml(){
 //create bookmark list element that gets displayed on the page
 //check the bookmark's expanded value and create two version of <li> for T or F
 function generateBookmarkItem(bookmark){
-  //if expanded, return expanded view.
-  //otherwise:
+  console.log(`bookmark.url: ${bookmark.url}`);
+  console.log(`store.bookmarks.url: ${store.bookmarks.url}`)
+  if (store.bookmarks.expanded === true){
     return `
     <li class="list-item" data-id=${bookmark.id}>
       <h2 class="click-to-expand">${bookmark.title}</h2>
       <p>${bookmark.rating}</p>
+      <a href="${bookmark.url}">Visit site</a>
       <button class="delete-button">Delete</button>
     </li>
     `;
-  }
+  } else {
+    return `
+    <li class="list-item" data-id=${bookmark.id}>
+      <h2 class="click-to-expand">${bookmark.title}</h2>
+      <p>${bookmark.rating}</p>
+    </li>
+    `;
+  };
+};
 
 //maps over each <li> created and joins them together
 function generateBookmarkList(bookmarkItem){
@@ -88,14 +98,14 @@ function generateBookmarkList(bookmarkItem){
 }
 
 //gets the id of element that was clicked on and toggles expand for that item*********************************************
-function whatToExpand(e){
-  let itemId = getBookmarkId(e.currentTarget);
-  store.bookmarks.forEach(bookmark => {
-    if (bookmark.id === itemId){
-      store.toggleExpand;
-    }
-  })
-}
+// function whatToExpand(e){
+//   let itemId = getBookmarkId(e.currentTarget);
+//   store.bookmarks.forEach(bookmark => {
+//     if (bookmark.id === itemId){
+//       store.toggleExpand;
+//     }
+//   })
+// }
 
 //updates the dom based on changes made to the store!
 function render(){
@@ -126,15 +136,12 @@ function render(){
 //set bookmarks.expanded to TRUE!
     //then render will call the expandedHtml template fn ********************************************************
 function handleExpandView(){
-  // $('main').on('click', '.list-item', function(event){
-  //   let bookmark = store.findById(store.bookmarks);
-  //   console.log('to expand', bookmark);
-  //   //call whatToExpand that will only toggle for specific ID
-  //   //whatToExpand(bookmark);
-  //   //store.toggleExpand(bookmark);
-  //   render();
-  //   console.log('item wants to expand')
-  //  });
+  $('main').on('click', '.list-item', function(event){
+    let bookmark = getBookmarkId(event.currentTarget)
+    store.toggleExpand();
+    render();
+    console.log(`item ${bookmark} wants to expand`)
+   });
 }
 
 //When a filter value is selected, ******************************************************************************
@@ -154,7 +161,7 @@ function handleAddNewClick(){
   });
 };
 
-//converts the user input into a JSON object (I think)
+//converts the user input into a JSON object
 function serializeJson(form) {
   const formData = new FormData(form);
   const o = {};
@@ -166,15 +173,16 @@ function serializeJson(form) {
 function handleCreateClick(){
   $('main').on('submit','.create-bookmark', function (event){
     event.preventDefault();
-    //Store the inputs into a variable and convert in to JSON
+    //Store the inputs into a variable and convert it to JSON
     let formElement = $('.create-bookmark')[0];
     const newEntry = serializeJson(formElement);
     //add the inputs to the server
     api.addBookmarks(newEntry)
     .then((newBookmark) => {
-      //also add them to the bookmark array defined in store module
+      //also adds them to the bookmark array defined in store module
       store.addBookmark(newBookmark);
       //then set adding prop back to false since we are now done adding
+        //and render will generate the main page
       store.adding = false;
       console.log('create click handled')
       console.log('JSONified entry', newEntry)
@@ -187,8 +195,8 @@ function handleCreateClick(){
 };
 
 //when the user clicks 'cancel'
-//adding gets changed to false
-    //and render with call the mainHtml fn
+//adding prop gets changed to false
+    //and render will call the mainHtml fn
 function handleCancelClick(){
   $('main').on('click', '.cancel-button', function(event){
    store.adding = false;
@@ -199,7 +207,7 @@ function handleCancelClick(){
 };
 
 //when delete is clicked, 
-//call api.deletetookmarks to remove is from server*************************************************************
+//call api.deletetookmarks to remove it from server
 //and remove it from store.bookmarks 
 function handleDeleteClick(){
   $('main').on('click', '.delete-button', event => {

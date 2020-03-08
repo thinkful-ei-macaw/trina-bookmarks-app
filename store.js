@@ -21,7 +21,7 @@ function addBookmark(newBookmark){
   //console.log(obj, 'was added to STORE')
 }
 
-function toggleExpand(bookmark){
+function toggleExpand(){
   bookmarks.expanded = !bookmarks.expanded;
 }
 
