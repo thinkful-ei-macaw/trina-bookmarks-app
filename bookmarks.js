@@ -2,8 +2,6 @@
 import store from './store.js';
 import api from './api.js';
 
-//SOS
-// 
 
 //////////////////////////////////template generators/////////////////////////
 
@@ -75,7 +73,7 @@ function generateBookmarkItem(bookmark){
   //if expanded, return expanded view.
   //otherwise:
     return `
-    <li class="list-item" id=${bookmark.id}>
+    <li class="list-item" data-id=${bookmark.id}>
       <h2 class="click-to-expand">${bookmark.title}</h2>
       <p>${bookmark.rating}</p>
       <button class="delete-button">Delete</button>
@@ -204,24 +202,27 @@ function handleCancelClick(){
 //call api.deletetookmarks to remove is from server*************************************************************
 //and remove it from store.bookmarks 
 function handleDeleteClick(){
-  $('main').on('click', '.delete-button', function(event){
-    event.preventDefault();
-    let id = getBookmarkId(event.currentTarget);
+  $('main').on('click', '.delete-button', event => {
+    //event.preventDefault();
+    let id = getBookmarkId(event.target);
     api.deleteBookmarks(id)
       .then(function() {
         store.deleteBookmark(id);
         render();
+        console.log('delete click handled');
       })
-    //catch error!
+      .catch((error) => {
+        store.sendError(error.message)
+        render();
+      })
   })
-  console.log('delete click handled'); 
 }
 
 //this is to identify a specific bookmark
 function getBookmarkId(bookmark){
   return $(bookmark)
   .closest('.list-item')
-  .attr('.bookmark-id');
+  .data('id');
 }
 
 
