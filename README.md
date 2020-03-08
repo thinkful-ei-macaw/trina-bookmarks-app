@@ -6,8 +6,10 @@ Bookmarking app which allows user to:
       -title
       -rating
       -url
-      -description
+      -description (optional)
 
-  View 'condesed version on list on initial page load
+  View 'condesed' version of list on initial page load
+
+  Click bookmark to expand it and view description and options to delete and visit site
 
   Select from a list of ratings

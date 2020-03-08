@@ -77,7 +77,10 @@ function generateBookmarkItem(bookmark){
     <li class="list-item" data-id=${bookmark.id}>
       <h2 class="click-to-expand">${bookmark.title}</h2>
       <p>${bookmark.rating}</p>
+      <p>${bookmark.desc}</p>
+      <button class="url-button">
       <a href="${bookmark.url}">Visit site</a>
+      </button>
       <button class="delete-button">Delete</button>
     </li>
     `;
