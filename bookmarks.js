@@ -12,7 +12,7 @@ function generateMainHtml(items){
   <h1> My Bookmarks</h1>
 <div class = "add-filter">
   <button type="button" class="add-button">+ADD</button>
-  <select id="min rating">
+  <select id="min-rating">
     <option value "select>Filter by rating</option>
     <option value="1">1+</option>
     <option value="2">2+</option>
@@ -72,7 +72,7 @@ function generateCreateNewHtml(){
 function generateBookmarkItem(bookmark){
   console.log(`bookmark.url: ${bookmark.url}`);
   console.log(`store.bookmarks.url: ${store.bookmarks.url}`)
-  if (store.bookmarks.expanded === true){
+  if (bookmark.expanded === true){
     return `
     <li class="list-item" data-id=${bookmark.id}>
       <h2 class="click-to-expand">${bookmark.title}</h2>
@@ -141,7 +141,7 @@ function render(){
 function handleExpandView(){
   $('main').on('click', '.list-item', function(event){
     let bookmark = getBookmarkId(event.currentTarget)
-    store.toggleExpand();
+    store.toggleExpand(bookmark);
     render();
     console.log(`item ${bookmark} wants to expand`)
    });
@@ -151,7 +151,9 @@ function handleExpandView(){
 //set the filter property to that value!
     //then render (or generate bookmarkStr) will sort through the bookmark ratings and display accordingly
 function handleSetFilter(){
-
+  $('main').on('change', '#min-rating', function(event){
+    console.log('filter was set');
+  });
 }
 
 //when the add buttom is clicked, adding property is set to true

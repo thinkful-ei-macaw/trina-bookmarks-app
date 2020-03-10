@@ -11,6 +11,12 @@ h1 {
   text-align: center;
 }
 
+h2 {
+  float: left;
+  font-size: 30px;
+  vertical-align: middle;
+}
+
 ul{
   list-style: none;
   text-align: center;
@@ -19,6 +25,7 @@ ul{
 }
 
 li {
+  height: auto;
   margin: 10px;
   padding: 20px;
   padding-left: 10px;
