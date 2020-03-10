@@ -30,7 +30,7 @@ const BASE_URL = 'https://thinkful-list-api.herokuapp.com/trina/bookmarks';
 
   //GET
   function getBookmarks(){
-    console.log(apiFetch(BASE_URL))
+    //console.log(apiFetch(BASE_URL))
     return apiFetch(BASE_URL)
     };
 

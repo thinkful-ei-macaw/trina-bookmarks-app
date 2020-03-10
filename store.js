@@ -40,7 +40,7 @@ function deleteBookmark(id){
 // }
 
 function filterBookmarks(){ 
-  return this.bookmarks.filter(bookmark => bookmark >= this.filter)
+ return this.bookmarks.filter(bookmark => bookmark.rating >= this.filter);
 }
 
 function sendError(error){

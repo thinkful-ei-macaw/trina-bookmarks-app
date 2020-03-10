@@ -70,8 +70,6 @@ function generateCreateNewHtml(){
 //create bookmark list element that gets displayed on the page
 //check the bookmark's expanded value and create two version of <li> for T or F
 function generateBookmarkItem(bookmark){
-  console.log(`bookmark.url: ${bookmark.url}`);
-  console.log(`store.bookmarks.url: ${store.bookmarks.url}`)
   if (bookmark.expanded === true){
     return `
     <li class="list-item" data-id=${bookmark.id}>
@@ -88,7 +86,7 @@ function generateBookmarkItem(bookmark){
     return `
     <li class="list-item" data-id=${bookmark.id}>
       <h2 class="click-to-expand">${bookmark.title}</h2>
-      <p>${bookmark.rating}</p>
+      <p>Rating: ${bookmark.rating}</p>
     </li>
     `;
   };
@@ -112,7 +110,7 @@ function generateBookmarkList(bookmarkItem){
 
 //updates the dom based on changes made to the store!
 function render(){
-  let bookmarks = [...store.bookmarks];
+  let bookmarks = store.filterBookmarks() //[...store.bookmarks];
   let items = generateBookmarkList(bookmarks);
   //need to add error functions........
   if (store.adding === true){
@@ -120,10 +118,8 @@ function render(){
   } else {
     $('main').html(generateMainHtml(items));
   }
-  console.log('rendering...');
-  //why doenst bookmarks initially  store the same data thats in store.bookmarks????
-  console.log(bookmarks);
-  console.log(store.bookmarks)
+  //console.log('rendering...');
+  //console.log('filter is:', store.filter)
   // console.log(`Bookmarks:${store.bookmarks}`)
   // console.log(`adding: ${store.adding}`);
   // console.log(`error: ${store.error}`);
@@ -143,7 +139,6 @@ function handleExpandView(){
     let bookmark = getBookmarkId(event.currentTarget)
     store.toggleExpand(bookmark);
     render();
-    console.log(`item ${bookmark} wants to expand`)
    });
 }
 
@@ -152,7 +147,9 @@ function handleExpandView(){
     //then render (or generate bookmarkStr) will sort through the bookmark ratings and display accordingly
 function handleSetFilter(){
   $('main').on('change', '#min-rating', function(event){
-    console.log('filter was set');
+    store.filter = $('#min-rating').val();
+    store.filterBookmarks();
+    render();
   });
 }
 
@@ -162,7 +159,6 @@ function handleAddNewClick(){
   $('main').on('click', '.add-button', function(event){
     store.adding = true;
     render();
-    console.log('add click handled');
   });
 };
 
@@ -189,8 +185,6 @@ function handleCreateClick(){
       //then set adding prop back to false since we are now done adding
         //and render will generate the main page
       store.adding = false;
-      console.log('create click handled')
-      console.log('JSONified entry', newEntry)
       render()
     })
     .catch((error) => {
@@ -206,7 +200,6 @@ function handleCancelClick(){
   $('main').on('click', '.cancel-button', function(event){
    store.adding = false;
    render(); 
-   console.log('cancel click handled');
   }); 
   return;
 };
@@ -222,7 +215,6 @@ function handleDeleteClick(){
       .then(function() {
         store.deleteBookmark(id);
         render();
-        console.log('delete click handled');
       })
       .catch((error) => {
         store.sendError(error.message)
